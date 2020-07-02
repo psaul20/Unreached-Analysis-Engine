@@ -13,7 +13,7 @@ In the long-term, we may explore the following:
 * Sharing of this information amongst churches and parachurch organizations to bring greater focus and clarity to UPG outreach
 
 Initial set of tools to be explored as part of this effort:
-* Anaconda python data analysis platform
+* Anaconda python data analysis platform (Jupyter Notebook for iterative development)
 * Python data analysis libraries such as pandas, matplotlib, and numpy
 * AWS event-based application infrastructure (EC2, Lambda, etc.)
 
