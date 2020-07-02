@@ -1,6 +1,6 @@
 # Unreached-Analysis-Engine
 
-This project is meant to be a collaborative learning effort for all who are interested in developing insights around engagement with Unreached People Groups around the world. Unreached People Groups are defined by the [Joshua Project](https://joshuaproject.net/help/definitions#unreached "Joshua Project") as "less than or equal to 2% Evangelical Christian and less than or equal to 5% Professing Christians." This threshold is understood to be the minimum requirement needed in order for a sulf-sustaining movement of Christian disciple-making within a people group (a distinct ethnic unit with shared history, language, and culture).
+This project is meant to be a collaborative learning effort for all who are interested in developing insights around engagement with Unreached People Groups (UPGs) around the world. Unreached People Groups are defined by the [Joshua Project](https://joshuaproject.net/help/definitions#unreached "Joshua Project") as "less than or equal to 2% Evangelical Christian and less than or equal to 5% Professing Christians." This threshold is understood to be the minimum requirement needed to start a sulf-sustaining movement of Christian disciple-making within a people group (a distinct ethnic unit with shared history, language, and culture).
 
 Initially, the vision for this application is the following:
 * Experiment with Python libraries for data analysis and visualization (pandas, matplotlib, numpy, etc.) to analyze and visualize extensive data sets gathered by the Joshua Project
