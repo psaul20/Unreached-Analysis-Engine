@@ -16,9 +16,17 @@ Initial set of tools to be explored as part of this effort:
 * Anaconda python data analysis platform (Jupyter Notebook for iterative development)
 * Python data analysis libraries such as pandas, matplotlib, and numpy
 * AWS event-based application infrastructure (EC2, Lambda, etc.)
+* Currently investigating [Plotly] (https://plotly.com/python/getting-started/ "Plotly") as a means for interactive mapping
 
 Feel free to share this with any friends who may be interested in helping out. All are welcome!!
 
 In Him,
 
 Patrick Saul
+
+
+## Dependent Libraries (Pip/Conda Installed)
+
+* Plotly
+* Pandas
+* Basemap-data-hires
