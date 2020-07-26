@@ -18,15 +18,21 @@ Initial set of tools to be explored as part of this effort:
 * AWS event-based application infrastructure (EC2, Lambda, etc.)
 * Currently investigating [Plotly] (https://plotly.com/python/getting-started/ "Plotly") as a means for interactive mapping
 
+Join the Trello Board [here] (https://trello.com/invite/b/EEJXMzsH/61665c6fe5c87f3acd20b5594cf845da/app-work "Trello")
+
 Feel free to share this with any friends who may be interested in helping out. All are welcome!!
 
 In Him,
 
 Patrick Saul
 
+## TO DO:
+
+* Research and implement an interactive mapping/visualization framework (Dash?)
+* Implement AI Algorithms (WIP
 
 ## Dependent Libraries (Pip/Conda Installed)
 
 * Plotly
 * Pandas
-* Basemap-data-hires
+
