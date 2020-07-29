@@ -12,6 +12,7 @@ import os
 
 os.environ['PROJ_LIB'] = '/Users/patricksaul/anaconda3/share/proj'
 
+
 # In[3]:
 
 
@@ -21,6 +22,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.basemap import Basemap
+import datetime as dt
 
 
 # In[4]:
@@ -30,11 +32,12 @@ import io
 import requests
 
 
-# # Import Unreached Base File
+# # Import People Groups Base File
 
 # In[5]:
 
 
+#Data set for all people groups
 url = "https://joshuaproject.net/resources/datasets/1"
 response = requests.get(url)
 
@@ -42,163 +45,219 @@ response = requests.get(url)
 # In[6]:
 
 
-open('unreached.csv','wb').write(response.content)
+todayFileName = 'AllPeoplesByCountry_' + str(dt.datetime.today().date()) + '.csv'
 
 
 # In[7]:
 
 
-ur_df = pd.read_csv('unreached.csv', low_memory=False,skiprows=1)
+open(todayFileName,'wb').write(response.content)
 
-
-# All Columns: ROG, Ctry, PeopleID3, ROP3, PeopNameAcrossCountries, PeopNameInCountry, Population, JPScale, LeastReached, ROL3, PrimaryLanguageName, BibleStatus, RLG3, PrimaryReligion, PercentAdherents, PercentEvangelical, PeopleID1, ROP1, AffinityBloc, PeopleID2, ROP2, PeopleCluster, CountOfCountries, RegionCode, RegionName, ROG2, Continent, 10_40Window, IndigenousCode, WorkersNeeded, Frontier, Latitude, Longitude
 
 # In[8]:
 
 
-ur_df.head()
+pg_df = pd.read_csv(todayFileName, low_memory=False,skiprows=1)
 
+
+# All Columns: ROG, Ctry, PeopleID3, ROP3, PeopNameAcrossCountries, PeopNameInCountry, Population, JPScale, LeastReached, ROL3, PrimaryLanguageName, BibleStatus, RLG3, PrimaryReligion, PercentAdherents, PercentEvangelical, PeopleID1, ROP1, AffinityBloc, PeopleID2, ROP2, PeopleCluster, CountOfCountries, RegionCode, RegionName, ROG2, Continent, 10_40Window, IndigenousCode, WorkersNeeded, Frontier, Latitude, Longitude
 
 # In[9]:
 
 
-ur_df.describe()
+pg_df.head()
 
-
-# ## Analyze Data
 
 # In[10]:
 
 
-ur_df['quartile'] = pd.qcut(ur_df['PercentEvangelical'], q=4, duplicates='drop')
-ur_df['decile'] = pd.qcut(ur_df['PercentEvangelical'], q=10, precision=3, duplicates='drop')
+pg_df.describe()
 
 
-# In[11]:
+# # Track Changes Over Time (WIP)
+
+# In[20]:
 
 
-ur_df.head()
+olddt = '2020-06-29'
+newdt = str(dt.datetime.today().date())
 
 
-# # Map Visualization
-
-# In[12]:
+# In[21]:
 
 
-ur_df_plot = ur_df
+old_df = pd.read_csv('AllPeoplesByCountry_' + olddt + '.csv', low_memory=False,skiprows=1)
+new_df = pd.read_csv('AllPeoplesByCountry_' + newdt + '.csv', low_memory=False,skiprows=1)
 
 
-# In[13]:
+# In[22]:
 
 
-ur_df_plot = ur_df_plot[~pd.isna(ur_df['Population'])]
+old_df['Snapshot Date'] = olddt
 
 
-# In[14]:
+# In[23]:
 
 
-ur_df_plot = ur_df_plot[~pd.isna(ur_df['decile'])]
+new_df['Snapshot Date'] = newdt
 
 
-# In[15]:
+# In[24]:
+
+
+#Concatenate old and new
+full_df = pd.concat([old_df,new_df])
+
+
+# In[25]:
+
+
+change_df = full_df.drop_duplicates(keep='last')
+
+
+# In[26]:
+
+
+full_df = pd.concat([old_df,change_df])
+
+
+# In[27]:
+
+
+full_df['ID'] = full_df['PeopleID3'].astype(str).str.cat(full_df['Ctry'], sep=' ')
+
+
+# In[28]:
+
+
+full_df = full_df.sort_values(by=['ID'])
+
+
+# In[29]:
+
+
+full_df.head()
+
+
+# In[30]:
+
+
+# Method below highly inefficient so commented out, but descriptive of the logic we are executing with the NumPy Where
+#function below
+# ##Iterate through to calculate change
+# def changeCalc(df, calcField, outField):
+#     prevIdx = None
+#     currLoc = 0
+#     for index, row in df.iterrows():
+#         #If previous row and current row are the same
+#         if prevIdx == index:
+#             #Subtract the current row's calcField from the previous row's calcField and store in the df at
+#             #current integer based position
+#             df.iloc[:,(currLoc,outField)] = row[calcField] - df.iloc[:,(currLoc - 1,calcField)]
+#         prevIdx = index
+#         currLoc +=1
+
+        
+# full_df = changeCalc(full_df, 'PercentEvangelical', 'PercEvChg')
+
+full_df['PercEvChg'] = np.where(full_df['ID'].shift(1) == full_df['ID'], full_df['PercentEvangelical'] -                                full_df.shift(1)['PercentEvangelical'],np.NaN)
+
+
+# In[31]:
+
+
+full_df[(full_df['PercEvChg'] != 0) & (~pd.isna(full_df['PercEvChg']))]
+
+
+# # Map Visualization Prep
+
+# In[32]:
+
+
+ur_df_plot = full_df
+
+
+# In[33]:
+
+
+ur_df_plot = ur_df_plot.drop_duplicates(keep='last')
+
+
+# In[34]:
+
+
+ur_df_plot = ur_df_plot[~pd.isna(ur_df_plot['Population'])]
+
+
+# In[35]:
 
 
 ur_df_plot = ur_df_plot[ur_df_plot['LeastReached'] == 'Y']
 
 
-# In[16]:
+# In[36]:
 
 
 lat = ur_df_plot['Latitude'].values
 lon = ur_df_plot['Longitude'].values
 
 
-# In[50]:
+# In[37]:
 
 
 ur_df_plot.head()
 
 
-# ## Matplotlib (Static)
-
-# In[17]:
-
-
-# # Following based on https://jakevdp.github.io/PythonDataScienceHandbook/04.13-geographic-data-with-basemap.html
-# #Matplotlib maps appear to be static, investigating interactive maps
-# # 1. Draw the map background
-# fig = plt.figure(figsize=(12, 8), edgecolor='w')
-# m = Basemap(projection='cyl', resolution=None,
-#             llcrnrlat=-90, urcrnrlat=90,
-#             llcrnrlon=-180, urcrnrlon=180)
-# m.shadedrelief()
-# # 2. scatter city data, with color reflecting population
-# # and size reflecting area
-# m.scatter(lon, lat, latlon=True, alpha=0.1)
-
-# #  To be adapted:
-
-# # # 3. create colorbar and legend
-# # plt.colorbar(label=r'$\log_{10}({\rm population})$')
-# # plt.clim(3, 7)
-
-# # # make legend with dummy points
-# # for a in [100, 300, 500]:
-# #     plt.scatter([], [], c='k', alpha=0.5, s=a,
-# #                 label=str(a) + ' km$^2$')
-# # plt.legend(scatterpoints=1, frameon=False,
-# #            labelspacing=1, loc='lower left');
-
-
 # ## Plotly (Interactive)
 
-# In[ ]:
+# In[38]:
 
 
 #From https://plotly.com/python/scatter-plots-on-maps/
+#Size by population, color by # evangelical
 
-px.set_mapbox_access_token("pk.eyJ1IjoicGFzYXVsIiwiYSI6ImNrZDB1MHJqZzB4Yjkycm15MHZkZmRpa3gifQ.mciD4JDnZFXAhyOgm_8oww")
-fig = px.scatter_mapbox(ur_df_plot, lat="Latitude",
+px.set_mapbox_access_token(open('mapbox_token.txt').read())
+fig1 = px.scatter_mapbox(ur_df_plot, lat="Latitude",
                      lon = "Longitude",
                      color="PercentEvangelical", # which column to use to set the color of markers
                      hover_name="PeopNameInCountry", # column added to hover information
                      size="Population", # size of markers
-                     color_continuous_scale=px.colors.cyclical.IceFire_r,
-                     size_max=15,
-                     zoom=10)
+                     color_continuous_scale=px.colors.sequential.YlOrRd_r,
+                     zoom=0.5)
 # fig.update_layout(mapbox_style="open-street-map")
-fig.show()
+fig1.show()
 
 
-# In[43]:
+# In[39]:
 
 
 #From https://plotly.com/python/scatter-plots-on-maps/
+#Size by population, color by % change evangelical
+#Need to fix visual
 
-df = px.data.carshare()
-df.head()
-fig = px.scatter_mapbox(df, lat="centroid_lat", lon="centroid_lon",     color="peak_hour", size="car_hours",
-                  color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
-fig.show()
+chgPlot = ur_df_plot.loc[ur_df_plot['PercEvChg'] != 0]
+chgPlot = chgPlot[~pd.isna(chgPlot['PercEvChg'])]
 
-
-# In[49]:
-
-
-df.head()
-
-
-# In[32]:
-
-
-colors = ['Red','OrangeRed','Orange','Yellow']
-px.set_mapbox_access_token('pk.eyJ1IjoicGFzYXVsIiwiYSI6ImNrZDB1MHJqZzB4Yjkycm15MHZkZmRpa3gifQ.mciD4JDnZFXAhyOgm_8oww')
-fig = px.scatter_geo(ur_df_plot, lat='Latitude',
-                     lon = 'Longitude',
-                     color="PercentEvangelical", # which column to use to set the color of markers
+px.set_mapbox_access_token(open('mapbox_token.txt').read())
+fig2 = px.scatter_mapbox(chgPlot, lat="Latitude",
+                     lon = "Longitude",
+                     color="PercEvChg", # which column to use to set the color of markers
                      hover_name="PeopNameInCountry", # column added to hover information
                      size="Population", # size of markers
-                     color_continuous_scale=px.colors.cyclical.IceFire_r)
+                     color_continuous_scale=px.colors.sequential.YlOrRd_r,
+                     zoom=0.5)
+# fig.update_layout(mapbox_style="open-street-map")
+fig2.show()
 
-fig.show()
+
+# In[40]:
+
+
+print(chgPlot['PercEvChg'].min())
+
+
+# In[41]:
+
+
+chgPlot[chgPlot['PercEvChg'] == -20]
 
