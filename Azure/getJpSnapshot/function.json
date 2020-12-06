@@ -1,11 +1,12 @@
 {
-  "scriptFile": "__init__.py",
+  "scriptFile": "getJpSnapshot.py",
   "bindings": [
     {
       "name": "mytimer",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": "0 35 5 5 * *"
+      "schedule": "0 35 11 * * 5"
+      
     }
   ]
 }
