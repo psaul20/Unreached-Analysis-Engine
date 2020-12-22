@@ -29,7 +29,7 @@ Patrick Saul
 ## TO DO:
 
 * Research and implement an interactive mapping/visualization framework (Dash? Paid services such as Tableau, Chartio?)
-* 
+* Investigate event-based transformation process and storage in cloud-based table system (Azure Functions, Tables)
 
 ## Dependent Libraries (Pip/Conda Installed)
 
