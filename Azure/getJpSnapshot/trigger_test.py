@@ -13,8 +13,7 @@ class TestFunction(unittest.TestCase):
         # Call the function.
         main(req)
 
-        connect_str = 'DefaultEndpointsProtocol=https;AccountName=storageaccountunrea9422;AccountKey=qbWxY0asaeSeJOiY7rP0le0NXr/yw107GalfGKXJYQfHSA9umbQlDG3JrAcUPj/Wq93ztCtZZ8twuXKk4h8QFQ==;EndpointSuffix=core.windows.net'
-
+        connect_str = os.environ["AzureWebJobsStorage"]
         # Check the output.
         blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 
