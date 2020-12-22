@@ -15,7 +15,7 @@ In the long-term, we may explore the following:
 Initial set of tools to be explored as part of this effort:
 * Anaconda python data analysis platform (Jupyter Notebook for iterative development)
 * Python data analysis libraries such as pandas, matplotlib, and numpy
-* AWS event-based application infrastructure (EC2, Lambda, etc.)
+* Cloud event-based application infrastructure (AWS EC2, Lambda, Azure Function Apps, etc.)
 * Currently investigating [Plotly] (https://plotly.com/python/getting-started/ "Plotly") as a means for interactive mapping
 
 Join the Trello Board [here] (https://trello.com/invite/b/EEJXMzsH/61665c6fe5c87f3acd20b5594cf845da/app-work "Trello")
@@ -28,11 +28,10 @@ Patrick Saul
 
 ## TO DO:
 
-* Research and implement an interactive mapping/visualization framework (Dash?)
-* Implement AI Algorithms (WIP
+* Research and implement an interactive mapping/visualization framework (Dash? Paid services such as Tableau, Chartio?)
+* 
 
 ## Dependent Libraries (Pip/Conda Installed)
 
-* Plotly
-* Pandas
+* See requirements.txt
 
